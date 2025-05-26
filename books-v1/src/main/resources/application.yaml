@@ -1,0 +1,39 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: books-v1
+
+configuration:
+  error-messages:
+    Default: No hemos podido realizar tu operación. Estamos trabajando para solucionar el inconveniente.
+
+  rest-clients:
+    books:
+      performance:
+        timeout: EXCELLENT
+        concurrency: LOW
+      request:
+        endpoint: https://fakerestapi.azurewebsites.net/api/v1/
+        headers:
+          provided:
+            Accept: application/json
+          forwarded:
+            channelId: channelId
+          auto-generated:
+            timestamp: TIMESTAMP
+          tracing:
+            traceParent: TRACE_PARENT
+
+# actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus, beans, env, loggers, flyway
+  endpoint:
+    health:
+      show-details: always
+      probes: #livess & readiness probe
+        enabled: true

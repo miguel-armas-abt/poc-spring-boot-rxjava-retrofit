@@ -1,0 +1,22 @@
+package com.demo.poc.entrypoint.books.repository.books.wrapper;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.io.Serializable;
+
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class BookInsertRequestWrapper implements Serializable {
+
+  private Long id;
+  private String title;
+  private String description;
+  private Integer pageCount;
+  private String excerpt;
+  private String publishDate;
+}
