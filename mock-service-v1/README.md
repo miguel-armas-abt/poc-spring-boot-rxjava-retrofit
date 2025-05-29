@@ -2,11 +2,6 @@
 [← Regresar](../README.md) <br>
 
 ---
-## 📋 Core library
-[🌐 Documentación](https://github.com/miguel-armas-abt/backend-core-library) <br>
-[🏷️ Versión](./src/main/java/com/demo/poc/commons/core/package-info.java) <br>
-
----
 
 ## ▶️ Despliegue local
 
@@ -24,14 +19,15 @@ mvn clean install
 
 ## ▶️ Despliegue con Docker
 
-⚙️ Crear imagen
+⚙️ Crear imagen/red
 ```shell
-docker build -t miguelarmasabt/books:v1.0.1 -f ./Dockerfile .
+docker build -t miguelarmasabt/mock-service:v1.0.1 -f ./Dockerfile .
+docker network create --driver bridge common-network
 ```
 
 ⚙️ Ejecutar contenedor
 ```shell
-docker run --rm -p 8080:8080 --env-file ./variables.env --name books-v1  miguelarmasabt/books:v1.0.1
+docker run --rm -p 8082:8082 --env-file ./variables.env --name mock-service-v1 --network common-network miguelarmasabt/mock-service:v1.0.1
 ```
 
 ---
@@ -47,12 +43,12 @@ minikube start
 ⚙️ Crear imagen
 ```shell
 eval $(minikube docker-env --shell bash)
-docker build -t miguelarmasabt/books:v1.0.1 -f ./Dockerfile .
+docker build -t miguelarmasabt/mock-service:v1.0.1 -f ./Dockerfile .
 ```
 
 ⚙️ Crear namespace y aplicar manifiestos
 ```shell
-kubectl create namespace library
+kubectl create namespace poc
 kubectl apply -f ./k8s.yaml -n poc
 ```
 
@@ -63,5 +59,5 @@ kubectl delete -f ./k8s.yaml -n poc
 
 ⚙️ Port-forward
 ```shell
-kubectl port-forward <pod-id> 8080:8080 -n poc
+kubectl port-forward <pod-id> 8082:8082 -n poc
 ```

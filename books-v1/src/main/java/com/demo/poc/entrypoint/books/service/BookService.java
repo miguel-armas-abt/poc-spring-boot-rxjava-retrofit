@@ -23,9 +23,10 @@ public class BookService {
   private final BookResponseMapper responseMapper;
 
   public Observable<BookResponseDto> findAll(Map<String, String> headers) {
-    return bookRepository.findAll(headers, properties)
-        .map(responseMapper::toDto)
-        .flatMapObservable(response -> Observable.fromStream(response.stream()));
+    return (properties.isReactive()
+        ? bookRepository.findAllReactive(headers, properties)
+        : bookRepository.findAll(headers, properties))
+        .map(responseMapper::toDto);
   }
 
   public Maybe<BookResponseDto> findById(Map<String, String> headers, Long id) {

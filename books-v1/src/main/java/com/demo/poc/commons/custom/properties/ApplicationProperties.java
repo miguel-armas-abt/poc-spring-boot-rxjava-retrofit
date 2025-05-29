@@ -11,4 +11,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "configuration")
 public class ApplicationProperties extends ConfigurationBaseProperties {
+
+  boolean reactive;
 }

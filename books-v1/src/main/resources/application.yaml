@@ -15,16 +15,18 @@ configuration:
         timeout: EXCELLENT
         concurrency: LOW
       request:
-        endpoint: https://fakerestapi.azurewebsites.net/api/v1/
+        endpoint: http://localhost:8082/poc/mocks/v1/
         headers:
           provided:
-            Accept: application/json
+            Accept: application/json,application/x-ndjson
           forwarded:
             channelId: channelId
           auto-generated:
             timestamp: TIMESTAMP
           tracing:
             traceParent: TRACE_PARENT
+
+  reactive: false
 
 # actuator endpoints
 management:

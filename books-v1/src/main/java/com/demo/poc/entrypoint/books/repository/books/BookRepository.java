@@ -1,11 +1,13 @@
 package com.demo.poc.entrypoint.books.repository.books;
 
 import com.demo.poc.commons.core.properties.restclient.RestClient;
+import com.demo.poc.commons.core.restclient.StreamingTransformer;
 import com.demo.poc.commons.custom.properties.ApplicationProperties;
 import com.demo.poc.commons.core.restclient.RetrofitFactory;
 import com.demo.poc.commons.core.restclient.utils.HeadersFiller;
 import com.demo.poc.entrypoint.books.repository.books.wrapper.BookInsertRequestWrapper;
 import com.demo.poc.entrypoint.books.repository.books.wrapper.BookResponseWrapper;
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
 import java.util.List;
@@ -19,22 +21,36 @@ import retrofit2.http.GET;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Streaming;
 
 public interface BookRepository {
 
   String SERVICE_NAME = "books";
 
-  @GET("Books")
+  @GET("books")
   Single<List<BookResponseWrapper>> findAll(@HeaderMap Map<String, String> headers);
 
-  default Single<List<BookResponseWrapper>> findAll(Map<String, String> headers,
+  default Observable<BookResponseWrapper> findAll(Map<String, String> headers,
                                                     ApplicationProperties properties) {
     RestClient restClient = properties.searchRestClient(SERVICE_NAME);
     Map<String, String> addedHeaders = HeadersFiller.fillHeaders(restClient.getRequest().getHeaders(), headers);
-    return findAll(addedHeaders);
+    return findAll(addedHeaders)
+        .flatMapObservable(response -> Observable.fromStream(response.stream()));
   }
 
-  @GET("Books/{id}")
+  @Streaming
+  @GET("reactive/books")
+  Observable<ResponseBody> findAllReactive(@HeaderMap Map<String, String> headers);
+
+  default Observable<BookResponseWrapper> findAllReactive(Map<String, String> headers,
+                                                          ApplicationProperties properties) {
+    RestClient restClient = properties.searchRestClient(SERVICE_NAME);
+    Map<String, String> addedHeaders = HeadersFiller.fillHeaders(restClient.getRequest().getHeaders(), headers);
+    return findAllReactive(addedHeaders)
+        .compose(StreamingTransformer.of(BookResponseWrapper.class));
+  }
+
+  @GET("books/{id}")
   Single<BookResponseWrapper> findById(@HeaderMap Map<String, String> headers,
                                        @Path(value = "id") Long id);
 
@@ -46,7 +62,7 @@ public interface BookRepository {
     return findById(addedHeaders, id);
   }
 
-  @POST("Books")
+  @POST("books")
   Single<ResponseBody> save(@HeaderMap Map<String, String> headers,
                             @Body BookInsertRequestWrapper book);
 

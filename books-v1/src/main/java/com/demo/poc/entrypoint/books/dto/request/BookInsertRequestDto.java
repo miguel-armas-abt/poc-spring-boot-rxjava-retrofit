@@ -21,14 +21,8 @@ public class BookInsertRequestDto implements Serializable {
   @NotEmpty
   private String title;
 
-  @NotEmpty
-  private String description;
-
   @NotNull
   private Integer pageCount;
-
-  @NotEmpty
-  private String excerpt;
 
   @NotEmpty
   private String publishDate;
