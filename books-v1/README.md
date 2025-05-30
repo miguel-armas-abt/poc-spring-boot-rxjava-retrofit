@@ -52,7 +52,7 @@ docker build -t miguelarmasabt/books:v1.0.1 -f ./Dockerfile .
 
 ⚙️ Crear namespace y aplicar manifiestos
 ```shell
-kubectl create namespace library
+kubectl create namespace poc
 kubectl apply -f ./k8s.yaml -n poc
 ```
 
